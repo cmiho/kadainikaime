@@ -42,6 +42,7 @@ import javax.swing.SwingUtilities;
  * Main window of the Anagram Game application.
  */
 public class Anagrams extends JFrame {
+	int count = 30;
 
     public static void main(String[] args) {
         /* Set the Nimbus look and feel */
@@ -188,12 +189,21 @@ public class Anagrams extends JFrame {
         });
         buttonsPanel.add(guessButton, new java.awt.GridBagConstraints());
 
+        
+        //////////////////////////////////
         nextTrial.setMnemonic('N');
         nextTrial.setText("New Word");
         nextTrial.setToolTipText("Fetch a new word.");
         nextTrial.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nextTrialActionPerformed(evt);
+            	if (selectLevel.getSelectedIndex() == 0){
+            		count = count - 3;
+                }else if (selectLevel.getSelectedIndex() == 1){
+                	count = count - 5;
+                }else if (selectLevel.getSelectedIndex() == 2){
+                	count = count - 10;
+                }
+                nextTrialActionPerformed(evt,count);
             }
         });
         buttonsPanel.add(nextTrial, new java.awt.GridBagConstraints());
@@ -212,7 +222,7 @@ public class Anagrams extends JFrame {
         gridBagConstraints.gridy = 2;
         mainPanel.add(levelLabel, gridBagConstraints);
 
-        selectLevel.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Level 1", "Level 2", "Level 3" }));
+        selectLevel.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Level 1(10回までシャッフル可能)", "Level 2(6回まで)", "Level 3(3回まで)" }));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -253,15 +263,26 @@ public class Anagrams extends JFrame {
         new About(this).setVisible(true);
     }//GEN-LAST:event_aboutMenuItemActionPerformed
 
-    private void nextTrialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextTrialActionPerformed
-        wordIdx = (wordIdx + 1) % wordLibrary.getSize();
+    
+    //////////////////////////////////////
+    private void nextTrialActionPerformed(java.awt.event.ActionEvent evt,int count) {//GEN-FIRST:event_nextTrialActionPerformed
+        if(count>=0){
+        	wordIdx = (wordIdx + 1) % wordLibrary.getSize();
 
-        feedbackLabel.setText(" ");
-        scrambledWord.setText(wordLibrary.getScrambledWord(wordIdx));
-        guessedWord.setText("");
-        getRootPane().setDefaultButton(guessButton);
+        	feedbackLabel.setText(" ");
+        	scrambledWord.setText(wordLibrary.getScrambledWord(wordIdx));
+        	guessedWord.setText("");
+        	getRootPane().setDefaultButton(guessButton);
 
-        guessedWord.requestFocusInWindow();
+        	guessedWord.requestFocusInWindow();
+        }else{
+        	feedbackLabel.setText("finish!");
+        	scrambledWord.setText("finish!");
+        	guessedWord.setText("finish!");
+        	getRootPane().setDefaultButton(guessButton);
+
+        	guessedWord.requestFocusInWindow();
+        }
     }//GEN-LAST:event_nextTrialActionPerformed
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
